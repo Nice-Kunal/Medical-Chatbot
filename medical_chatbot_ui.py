@@ -28,16 +28,470 @@ st.set_page_config(
 
 apply_custom_favicon()
 
+# Inject Google Fonts and improved CSS
 st.markdown(
     """
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    .stApp {
-        background:
-            radial-gradient(circle at top left, rgba(16, 163, 127, 0.18), transparent 26%),
-            radial-gradient(circle at top right, rgba(59, 130, 246, 0.10), transparent 24%),
-            linear-gradient(180deg, #1b1e28 0%, #14161d 100%);
+    :root {
+        --bg-main: #eef4f8;
+        --bg-surface: rgba(255, 255, 255, 0.94);
+        --bg-surface-strong: #ffffff;
+        --bg-sidebar: linear-gradient(180deg, #0d2741 0%, #133b5a 100%);
+        --bg-sidebar-card: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.08) 100%);
+        --bg-brand: linear-gradient(135deg, #0d5a78 0%, #0f7690 45%, #26a7a2 100%);
+        --bg-brand-soft: linear-gradient(135deg, #edf8f7 0%, #f9fcff 100%);
+        --text-primary: #0f2234;
+        --text-secondary: #4f667b;
+        --text-inverse: #f8fbff;
+        --border-soft: rgba(15, 34, 52, 0.10);
+        --border-accent: rgba(18, 119, 146, 0.20);
+        --shadow-soft: 0 20px 55px rgba(15, 39, 66, 0.08);
+        --shadow-card: 0 16px 36px rgba(15, 39, 66, 0.10);
+        --brand: #137792;
+        --brand-strong: #0d5971;
+        --brand-soft: #e4f3f7;
+        --success-soft: #d9f3ef;
+        --warning-soft: #fff6de;
+        --warning-border: #f0c36d;
+        --danger-soft: #fff0ef;
+        --radius-xl: 28px;
+        --radius-lg: 20px;
+        --radius-md: 14px;
     }
-
+    html, body, .stApp {
+        font-family: 'Manrope', 'Segoe UI', sans-serif !important;
+        color: var(--text-primary);
+        background:
+            radial-gradient(circle at top left, rgba(37, 167, 160, 0.10), transparent 26%),
+            radial-gradient(circle at top right, rgba(13, 76, 115, 0.10), transparent 22%),
+            linear-gradient(180deg, #f8fbfd 0%, var(--bg-main) 100%);
+    }
+    [data-testid="stAppViewContainer"] {
+        background: transparent;
+    }
+    [data-testid="stHeader"] {
+        background: rgba(248, 251, 253, 0.78);
+        backdrop-filter: blur(10px);
+    }
+    [data-testid="stSidebar"] {
+        background: var(--bg-sidebar);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    [data-testid="stSidebar"] * {
+        color: var(--text-inverse);
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] div {
+        color: inherit;
+    }
+    [data-testid="stSidebar"] .stButton > button {
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: none;
+    }
+    [data-testid="stSidebar"] .stButton > button:hover {
+        background: rgba(255, 255, 255, 0.18);
+        transform: translateY(-1px);
+    }
+    .main .block-container {
+        max-width: 1200px;
+        padding-top: 2.2rem;
+        padding-bottom: 2.5rem;
+    }
+    .custom-header {
+        display: flex;
+        align-items: center;
+        background:
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 22%),
+            var(--bg-brand);
+        padding: 32px;
+        border-radius: var(--radius-xl);
+        margin-bottom: 22px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 26px 64px rgba(14, 53, 80, 0.20);
+        animation: fade-slide-up 0.55s ease-out;
+    }
+    .custom-header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.10) 48%, transparent 100%);
+        transform: translateX(-120%);
+        animation: shimmer 7s linear infinite;
+    }
+    .custom-header-content {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        min-width: 0;
+    }
+    .custom-header-content h1 {
+        color: #ffffff;
+        font-size: 2.45rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin: 0 0 6px 0;
+    }
+    .custom-header-content p {
+        color: rgba(245, 250, 255, 0.92);
+        font-size: 1.02rem;
+        line-height: 1.7;
+        max-width: 760px;
+        margin: 0;
+    }
+    .hero-bullets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+    }
+    .hero-chip,
+    .quick-pill,
+    .suggestion-chip,
+    .attachment-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 9px 14px;
+        font-size: 0.86rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+    }
+    .hero-chip {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(8px);
+    }
+    .sidebar-panel,
+    .composer-shell,
+    [data-testid="stForm"],
+    .footer-bar {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-soft);
+        box-shadow: var(--shadow-soft);
+        backdrop-filter: blur(12px);
+    }
+    .sidebar-panel {
+        border-radius: 22px;
+        padding: 18px 18px 16px 18px;
+        margin-bottom: 6px;
+        background: var(--bg-sidebar-card);
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        box-shadow: 0 18px 34px rgba(2, 18, 31, 0.20);
+    }
+    .sidebar-panel h4 {
+        margin: 0 0 8px 0;
+        font-size: 1.02rem;
+        font-weight: 800;
+        color: #ffffff;
+    }
+    .sidebar-panel p,
+    .sidebar-section-caption,
+    .sidebar-delete-note {
+        color: rgba(240, 247, 252, 0.88);
+        font-size: 0.9rem;
+        line-height: 1.55;
+    }
+    .sidebar-note {
+        display: inline-flex;
+        margin-top: 12px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #ffffff;
+    }
+    .sidebar-section-title {
+        margin-top: 18px;
+        margin-bottom: 6px;
+        font-size: 1rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 0.01em;
+    }
+    .sidebar-divider {
+        height: 1px;
+        margin: 18px 0 14px 0;
+        background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.28), rgba(255,255,255,0.04));
+    }
+    .stSelectbox > div > div,
+    .stTextInput > div > div > input,
+    .stFileUploader > div,
+    .stPopover button {
+        border-radius: var(--radius-md) !important;
+    }
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] > div,
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] span,
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] input {
+        background: rgba(255, 255, 255, 0.14) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.16) !important;
+    }
+    [data-testid="stSidebar"] [data-baseweb="select"] svg {
+        fill: #ffffff !important;
+    }
+    .stTextInput > div > div > input,
+    .stSelectbox [data-baseweb="select"] > div,
+    .stTextArea textarea {
+        background: rgba(255, 255, 255, 0.98) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid rgba(18, 38, 58, 0.12) !important;
+        box-shadow: none !important;
+    }
+    .stTextInput > div > div > input:focus,
+    .stTextArea textarea:focus {
+        border-color: rgba(22, 124, 145, 0.42) !important;
+        box-shadow: 0 0 0 3px rgba(22, 124, 145, 0.10) !important;
+    }
+    .stButton > button,
+    div[data-testid="stFormSubmitButton"] button {
+        background: linear-gradient(135deg, #176b8c 0%, #1d96a0 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 14px;
+        min-height: 46px;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        box-shadow: 0 14px 30px rgba(23, 107, 140, 0.18);
+        transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+    .stButton > button:hover,
+    div[data-testid="stFormSubmitButton"] button:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.02);
+        box-shadow: 0 18px 34px rgba(23, 107, 140, 0.24);
+    }
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin: 4px 0 12px 0;
+    }
+    .stat-card {
+        background: var(--bg-surface-strong);
+        border: 1px solid var(--border-accent);
+        border-radius: 20px;
+        padding: 20px 20px 18px 20px;
+        box-shadow: var(--shadow-card);
+    }
+    .stat-card h3 {
+        margin: 0;
+        color: var(--brand-strong);
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+    .stat-card p {
+        margin: 8px 0 0 0;
+        color: var(--text-secondary);
+        font-size: 0.94rem;
+        font-weight: 600;
+    }
+    .quick-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+    .quick-pill {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-soft);
+        color: var(--text-primary);
+        box-shadow: 0 10px 24px rgba(15, 39, 66, 0.05);
+    }
+    .stChatMessage.user,
+    .stChatMessage.assistant {
+        padding: 18px 20px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        border: 1px solid transparent;
+        box-shadow: var(--shadow-card);
+        line-height: 1.7;
+    }
+    .stChatMessage.user {
+        background: linear-gradient(135deg, #1b7898 0%, #26a4a1 100%);
+        color: #ffffff;
+        border-top-right-radius: 8px;
+    }
+    .stChatMessage.assistant {
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--text-primary);
+        border-color: rgba(18, 38, 58, 0.08);
+        border-top-left-radius: 8px;
+    }
+    .attachment-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 10px 0 2px 0;
+    }
+    .attachment-chip {
+        background: var(--brand-soft);
+        color: var(--brand-strong);
+        border: 1px solid rgba(22, 124, 145, 0.14);
+    }
+    .source-doc {
+        background: #f8fbff;
+        border: 1px solid rgba(18, 38, 58, 0.10);
+        border-left: 4px solid #1d96a0;
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin: 8px 0;
+        color: var(--text-primary);
+        box-shadow: 0 10px 24px rgba(15, 39, 66, 0.05);
+    }
+    .composer-label {
+        margin: 24px 0 4px 2px;
+        color: var(--brand-strong);
+        font-size: 0.92rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+    .composer-caption {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: 0 0 14px 2px;
+        max-width: 760px;
+    }
+    .composer-shell {
+        border-radius: 24px;
+        padding: 18px 18px 12px 18px;
+        margin-bottom: 12px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 251, 254, 0.96) 100%);
+    }
+    .suggestion-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .suggestion-chip {
+        background: var(--bg-brand-soft);
+        color: var(--brand-strong);
+        border: 1px solid rgba(22, 124, 145, 0.14);
+    }
+    [data-testid="stForm"] {
+        border-radius: 22px;
+        padding: 8px 10px;
+        border: 1px solid rgba(18, 38, 58, 0.12);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 24px rgba(15, 39, 66, 0.06);
+        background: rgba(255, 255, 255, 0.98);
+    }
+    [data-testid="stForm"]:focus-within {
+        border-color: rgba(22, 124, 145, 0.34);
+        box-shadow: 0 0 0 4px rgba(22, 124, 145, 0.10), 0 12px 28px rgba(15, 39, 66, 0.08);
+    }
+    [data-testid="stForm"] .stTextInput > div,
+    [data-testid="stForm"] .stTextInput > div > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    [data-testid="stForm"] .stTextInput > div > div > input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding-left: 0.2rem !important;
+        padding-right: 0.2rem !important;
+    }
+    [data-testid="stForm"] .stTextInput > div > div > input:focus {
+        box-shadow: none !important;
+    }
+    [data-testid="stForm"] .stPopover button {
+        min-height: 44px;
+        border-radius: 16px !important;
+        box-shadow: none;
+    }
+    [data-testid="stForm"] div[data-testid="stFormSubmitButton"] button {
+        min-height: 44px;
+        border-radius: 16px !important;
+        box-shadow: none;
+    }
+    .stPopover button {
+        border: 1px solid rgba(18, 38, 58, 0.10) !important;
+        background: #ffffff !important;
+        color: var(--brand-strong) !important;
+        font-weight: 800 !important;
+    }
+    .stFileUploader > div {
+        background: #f9fcff !important;
+        border: 1px dashed rgba(22, 124, 145, 0.26) !important;
+    }
+    .stAlert {
+        border-radius: 16px;
+        border: 1px solid rgba(18, 38, 58, 0.08);
+    }
+    .footer-bar {
+        width: 100%;
+        border-radius: 26px;
+        padding: 22px 24px 18px 24px;
+        margin-top: 28px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 249, 252, 0.96) 100%);
+    }
+    .footer-bar p {
+        margin: 0;
+        color: var(--text-primary);
+    }
+    .footer-meta {
+        margin-top: 10px;
+        color: var(--text-secondary);
+        font-size: 0.92rem;
+    }
+    .footer-links {
+        margin-top: 8px;
+        font-size: 0.9rem;
+    }
+    .footer-links a {
+        color: var(--brand);
+        text-decoration: none;
+        font-weight: 700;
+    }
+    .footer-links a:hover {
+        text-decoration: underline;
+    }
+    .disclaimer-banner {
+        margin: 14px auto 0 auto;
+        max-width: 760px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: var(--warning-soft);
+        border: 1px solid var(--warning-border);
+        color: #7a5a11;
+        text-align: left;
+        line-height: 1.6;
+        font-size: 0.94rem;
+    }
+    #MainMenu,
+    footer {
+        visibility: hidden;
+    }
+    @media (max-width: 900px) {
+        .custom-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 24px;
+        }
+        .metric-grid {
+            grid-template-columns: 1fr;
+        }
+        .composer-shell {
+            padding: 16px 14px 10px 14px;
+        }
+    }
     @keyframes fade-slide-up {
         from {
             opacity: 0;
@@ -48,574 +502,20 @@ st.markdown(
             transform: translateY(0);
         }
     }
-
     @keyframes soft-pulse {
         0%, 100% {
-            box-shadow: 0 16px 40px rgba(16, 163, 127, 0.18);
+            box-shadow: 0 18px 46px rgba(16, 94, 116, 0.18);
         }
         50% {
-            box-shadow: 0 20px 52px rgba(16, 163, 127, 0.3);
+            box-shadow: 0 24px 58px rgba(16, 94, 116, 0.24);
         }
     }
-
     @keyframes shimmer {
         from {
             transform: translateX(-120%);
         }
         to {
             transform: translateX(120%);
-        }
-    }
-
-    .main {
-        background:
-            radial-gradient(circle at top, rgba(16, 163, 127, 0.12), transparent 30%),
-            linear-gradient(180deg, #343541 0%, #2f3038 100%);
-        animation: fade-slide-up 0.45s ease-out;
-    }
-
-    [data-testid="stSidebar"] {
-        background-color: #202123;
-        border-right: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    [data-testid="stSidebar"] .css-1d391kg {
-        color: #FFFFFF;
-    }
-
-    .stChatMessage {
-        background-color: #444654;
-        border-radius: 10px;
-        padding: 15px;
-        margin: 10px 0;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
-        animation: fade-slide-up 0.35s ease-out;
-        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    }
-
-    .stChatMessage:hover {
-        transform: translateY(-2px);
-        border-color: rgba(16, 163, 127, 0.25);
-        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.24);
-    }
-
-    [data-testid="stChatMessageContent"] {
-        color: #ECECF1;
-    }
-
-    .stTextInput > div > div > input {
-        background-color: #40414F;
-        color: #ECECF1;
-        border: 1px solid #565869;
-        border-radius: 8px;
-    }
-
-    .stButton > button {
-        background-color: #10A37F;
-        color: white;
-        border-radius: 8px;
-        border: none;
-        padding: 8px 16px;
-        font-weight: 600;
-        transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
-        box-shadow: 0 10px 24px rgba(16, 163, 127, 0.18);
-    }
-
-    .stButton > button:hover {
-        background-color: #0D8C6B;
-        transform: translateY(-1px);
-        box-shadow: 0 14px 28px rgba(16, 163, 127, 0.28);
-    }
-
-    h1 {
-        color: #ECECF1;
-        font-weight: 700;
-    }
-
-    h2, h3 {
-        color: #ECECF1;
-    }
-
-    .stMarkdown {
-        color: #ECECF1;
-    }
-
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-
-    .custom-header {
-        background:
-            radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 24%),
-            linear-gradient(135deg, rgba(16, 163, 127, 0.95) 0%, rgba(11, 96, 108, 0.94) 100%);
-        padding: 28px;
-        border-radius: 26px;
-        margin-bottom: 20px;
-        text-align: left;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 22px 58px rgba(0, 0, 0, 0.22);
-        animation: fade-slide-up 0.55s ease-out, soft-pulse 4s ease-in-out infinite;
-    }
-
-    .custom-header::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.14) 50%, transparent 80%);
-        animation: shimmer 6s linear infinite;
-    }
-
-    .custom-header h1 {
-        color: white;
-        margin: 0;
-        font-size: 2.65rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .custom-header p {
-        color: #E5E5E5;
-        margin: 10px 0 0 0;
-        font-size: 1rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .stat-card {
-        background: linear-gradient(180deg, rgba(42, 43, 50, 0.96), rgba(31, 34, 43, 0.94));
-        padding: 16px;
-        border-radius: 18px;
-        margin: 10px 0;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
-        transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-3px);
-        border-color: rgba(16, 163, 127, 0.26);
-    }
-
-    .hero-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.85fr);
-        gap: 18px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .hero-kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        width: fit-content;
-        padding: 8px 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.12);
-        color: #ecfdf5;
-        font-size: 0.82rem;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-    }
-
-    .hero-bullets {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 16px;
-    }
-
-    .hero-chip {
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(15, 23, 42, 0.22);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        color: #f8fafc;
-        font-size: 0.88rem;
-        font-weight: 600;
-    }
-
-    .hero-sidecard {
-        background: rgba(11, 18, 32, 0.24);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 22px;
-        padding: 18px;
-        backdrop-filter: blur(10px);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    }
-
-    .hero-sidecard h3 {
-        margin: 0 0 10px 0;
-        color: #f8fafc;
-    }
-
-    .hero-sidecard p {
-        margin: 0;
-        color: #d1fae5;
-        line-height: 1.6;
-        font-size: 0.92rem;
-    }
-
-    .stat-card h3 {
-        margin: 0;
-        color: #10A37F;
-        font-size: 1.8rem;
-    }
-
-    .stat-card p {
-        margin: 5px 0 0 0;
-        color: #ECECF1;
-        font-size: 0.9rem;
-    }
-
-    .source-doc {
-        background-color: #2A2B32;
-        padding: 10px;
-        border-radius: 5px;
-        margin: 5px 0;
-        font-size: 0.85rem;
-        border-left: 3px solid #565869;
-        animation: fade-slide-up 0.3s ease-out;
-    }
-
-    .disclaimer-banner {
-        margin: 18px auto;
-        max-width: 900px;
-        padding: 14px 16px;
-        border-radius: 12px;
-        border: 1px solid #f59e0b;
-        background: linear-gradient(90deg, rgba(245, 158, 11, 0.18), rgba(239, 68, 68, 0.12));
-        color: #FFF7ED;
-        font-size: 0.95rem;
-        font-weight: 600;
-        line-height: 1.5;
-        text-align: left;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
-    }
-
-    .disclaimer-banner strong {
-        color: #FDE68A;
-    }
-
-    .attachment-toolbar {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin: 10px 0 6px 0;
-        padding: 12px 14px;
-        border-radius: 18px;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
-        animation: fade-slide-up 0.3s ease-out;
-    }
-
-    .toolbar-title {
-        color: #f3f4f6;
-        font-size: 0.9rem;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-    }
-
-    .toolbar-note {
-        color: #9ca3af;
-        font-size: 0.78rem;
-    }
-
-    .attachment-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin: 6px 8px 0 0;
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: rgba(16, 163, 127, 0.14);
-        border: 1px solid rgba(16, 163, 127, 0.28);
-        color: #e5f9f3;
-        font-size: 0.82rem;
-        font-weight: 600;
-    }
-
-    .attachment-preview {
-        margin: 4px 0 12px 0;
-        animation: fade-slide-up 0.3s ease-out;
-    }
-
-    .metric-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-        margin: 14px 0 18px 0;
-    }
-
-    .quick-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin: 10px 0 18px 0;
-    }
-
-    .quick-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #d1d5db;
-        font-size: 0.84rem;
-        font-weight: 600;
-        transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
-    }
-
-    .quick-pill:hover {
-        transform: translateY(-1px);
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 255, 255, 0.14);
-    }
-
-    .sidebar-panel {
-        position: relative;
-        overflow: hidden;
-        background:
-            radial-gradient(circle at top right, rgba(16, 163, 127, 0.14), transparent 34%),
-            linear-gradient(180deg, rgba(44, 46, 53, 0.96), rgba(29, 31, 37, 0.96));
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 22px;
-        padding: 18px 18px 16px 18px;
-        margin: 12px 0 18px 0;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
-    }
-
-    .sidebar-panel::before {
-        content: "";
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 4px;
-        background: linear-gradient(180deg, #34d399 0%, #10a37f 100%);
-        opacity: 0.95;
-    }
-
-    .sidebar-panel h4 {
-        margin: 0 0 10px 0;
-        color: #f9fafb;
-        font-size: 1.02rem;
-        font-weight: 700;
-    }
-
-    .sidebar-panel p {
-        margin: 0;
-        color: #c6ced8;
-        font-size: 0.88rem;
-        line-height: 1.72;
-    }
-
-    .sidebar-panel .sidebar-note {
-        margin-top: 14px;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #ecfdf5;
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
-    }
-
-    .sidebar-divider {
-        height: 1px;
-        margin: 20px 0 18px 0;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02));
-    }
-
-    .sidebar-section-title {
-        margin: 0 0 6px 0;
-        color: #f8fafc;
-        font-size: 1.38rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-    }
-
-    .sidebar-section-caption {
-        margin: 0 0 14px 0;
-        color: #8f98a3;
-        font-size: 0.8rem;
-        line-height: 1.5;
-    }
-
-    .sidebar-delete-note {
-        margin: 10px 0 0 0;
-        color: #8f98a3;
-        font-size: 0.77rem;
-        line-height: 1.45;
-    }
-
-    .composer-shell {
-        position: sticky;
-        bottom: 16px;
-        z-index: 20;
-        margin: 14px 0 18px 0;
-        padding: 14px;
-        border-radius: 28px;
-        background:
-            radial-gradient(circle at top, rgba(52, 211, 153, 0.08), transparent 46%),
-            linear-gradient(180deg, rgba(18, 22, 32, 0.96), rgba(13, 16, 24, 0.98));
-        border: 1px solid rgba(148, 163, 184, 0.16);
-        box-shadow: 0 28px 60px rgba(0, 0, 0, 0.34);
-        backdrop-filter: blur(18px);
-        animation: fade-slide-up 0.3s ease-out;
-    }
-
-    .composer-label {
-        margin: 0 0 8px 6px;
-        color: #94a3b8;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-    }
-
-    .composer-caption {
-        margin: 0 0 12px 6px;
-        color: #64748b;
-        font-size: 0.86rem;
-    }
-
-    .command-bar {
-        padding: 10px;
-        border-radius: 22px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
-        border: 1px solid rgba(148, 163, 184, 0.08);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-
-    .suggestion-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin: 0 0 12px 0;
-        padding: 0 2px;
-    }
-
-    .suggestion-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(148, 163, 184, 0.12);
-        color: #cbd5e1;
-        font-size: 0.8rem;
-        font-weight: 600;
-        transition: transform 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
-    }
-
-    .suggestion-chip:hover {
-        transform: translateY(-1px);
-        background: rgba(255, 255, 255, 0.08);
-        border-color: rgba(52, 211, 153, 0.28);
-    }
-
-    [data-testid="stFileUploader"] {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px dashed rgba(255, 255, 255, 0.12);
-        border-radius: 14px;
-        padding: 8px;
-    }
-
-    [data-testid="stAudioInput"] {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px dashed rgba(255, 255, 255, 0.12);
-        border-radius: 14px;
-        padding: 8px;
-    }
-
-    div[data-testid="stTextInput"] input {
-        min-height: 56px;
-        border-radius: 18px;
-        border: 1px solid rgba(148, 163, 184, 0.18);
-        background: linear-gradient(180deg, rgba(70, 73, 92, 0.96), rgba(60, 63, 80, 0.96));
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-        padding: 0 18px;
-        font-size: 1rem;
-    }
-
-    div[data-testid="stTextInput"] input:focus {
-        border-color: rgba(34, 197, 94, 0.55);
-        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
-    }
-
-    div[data-testid="stPopover"] button {
-        min-height: 56px;
-        border-radius: 999px;
-        background: linear-gradient(180deg, rgba(28, 33, 45, 0.96), rgba(23, 27, 37, 0.96));
-        border: 1px solid rgba(148, 163, 184, 0.16);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-        font-weight: 600;
-        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
-    }
-
-    div[data-testid="stPopover"] button:hover {
-        background: linear-gradient(180deg, rgba(38, 44, 58, 1), rgba(29, 33, 44, 1));
-        transform: translateY(-1px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
-    }
-
-    div[data-testid="stFormSubmitButton"] button {
-        min-height: 56px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, #111827 0%, #0f766e 100%);
-        border: 1px solid rgba(94, 234, 212, 0.2);
-        color: #f8fafc;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        box-shadow: 0 18px 26px rgba(15, 118, 110, 0.22);
-        transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-    }
-
-    div[data-testid="stFormSubmitButton"] button:hover {
-        transform: translateY(-1px);
-        background: linear-gradient(135deg, #0f172a 0%, #115e59 100%);
-        box-shadow: 0 22px 32px rgba(15, 118, 110, 0.32);
-        filter: brightness(1.04);
-    }
-
-    .stChatInputContainer {
-        background: rgba(52, 53, 65, 0.82);
-        backdrop-filter: blur(10px);
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: #202123;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #565869;
-        border-radius: 5px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #6E6F7F;
-    }
-
-    @media (max-width: 900px) {
-        .hero-grid,
-        .metric-grid {
-            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -723,6 +623,41 @@ def _truncate_text(text, limit=4000):
     if len(text) <= limit:
         return text
     return text[:limit] + "\n...[truncated]"
+
+
+def _compact_context_docs(docs, per_doc_limit=650, total_limit=1800):
+    parts = []
+    used = 0
+    for index, doc in enumerate(docs or [], 1):
+        content = _truncate_text(getattr(doc, "page_content", ""), per_doc_limit)
+        if not content:
+            continue
+        block = f"Document {index}: {content}"
+        if used + len(block) > total_limit:
+            remaining = max(total_limit - used - 24, 0)
+            if remaining > 80:
+                block = f"Document {index}: {_truncate_text(content, remaining)}"
+                parts.append(block)
+            break
+        parts.append(block)
+        used += len(block)
+    return "\n\n".join(parts) if parts else "None"
+
+
+def _compact_attachment_blocks(blocks, total_limit=2200):
+    if not blocks:
+        return "None"
+    joined = "\n\n".join(_truncate_text(block, 900) for block in blocks)
+    return _truncate_text(joined, total_limit)
+
+
+def get_latest_attachment_payload(messages):
+    for message in reversed(messages or []):
+        attachments = message.get("attachments") or []
+        attachment_context = message.get("attachment_context") or []
+        if message.get("role") == "user" and attachments and attachment_context:
+            return attachments, attachment_context
+    return [], []
 
 
 def _uploaded_file_bytes(uploaded_file):
@@ -898,12 +833,12 @@ def format_attachment_context(attachments, attachment_blocks):
     return context
 
 
-def build_recent_history(messages, limit=6):
+def build_recent_history(messages, limit=4):
     """Keep a compact conversation window for follow-up questions."""
     history_lines = []
     for message in messages[-limit:]:
         role = "User" if message.get("role") == "user" else "Assistant"
-        content = _truncate_text(message.get("content", ""), 700)
+        content = _truncate_text(message.get("content", ""), 320)
         history_lines.append(f"{role}: {content}")
     return "\n".join(history_lines) if history_lines else "None"
 
@@ -927,6 +862,9 @@ if "conversations" not in st.session_state:
 
 if "current_chat_id" not in st.session_state:
     st.session_state.current_chat_id = None
+
+if "composer_upload_nonce" not in st.session_state:
+    st.session_state.composer_upload_nonce = 0
 
 if st.session_state.current_chat_id is None:
     chat_id, chat_data = create_chat()
@@ -964,6 +902,7 @@ def get_cached_qa_chain(model_name, temperature):
         model_name=model_name,
         temperature=temperature,
         groq_api_key=api_key,
+        max_tokens=420,
     )
 
     class SimpleQAChain:
@@ -975,28 +914,32 @@ def get_cached_qa_chain(model_name, temperature):
             query = input_dict.get("query", "")
             attachment_context = input_dict.get("attachment_context", [])
             recent_history = input_dict.get("recent_history", "None")
+            attachment_mode = input_dict.get("attachment_mode", "none")
             try:
-                docs = self.vectorstore.max_marginal_relevance_search(query, k=4, fetch_k=10)
+                docs = self.vectorstore.max_marginal_relevance_search(query, k=3, fetch_k=8)
             except Exception:
-                docs = self.vectorstore.similarity_search(query, k=4)
-            context = "\n".join([f"Document: {doc.page_content}" for doc in docs])
-            attachment_text = "\n\n".join(attachment_context) if attachment_context else "None"
+                docs = self.vectorstore.similarity_search(query, k=3)
+            context = _compact_context_docs(docs)
+            attachment_text = _compact_attachment_blocks(attachment_context)
 
             custom_prompt_template = """
     You are a careful medical AI assistant. Behave like a doctor doing basic clinical history taking, but do not claim to replace a doctor or provide a final diagnosis.
 
     Core rules:
     - Use only the provided evidence
-    - Answer only what the user actually asked
+    - Answer the current question directly and only then add supporting detail
     - If the evidence is incomplete, say that clearly
     - Use simple, direct language
-    - Keep the response concise and clinically organized
+    - Keep the response clinically organized and moderately detailed
     - Do not claim certain diagnosis from image, audio, or upload alone
     - Use uploaded attachment contents first when directly relevant
     - Ignore retrieved context if it does not match the exact user question
     - Use recent conversation history only to understand follow-up questions
     - Do not restart from zero if the user is continuing the same topic
     - Do not pad the answer with generic advice
+    - Keep the full answer around 180 to 260 words unless the case is urgent or the user asks for more detail
+    - Do not repeat the full image or file description on every reply
+    - If the user is asking a follow-up like precautions, treatment, seriousness, or next steps, answer that follow-up directly instead of re-summarizing the attachment
 
     Doctor-like information flow:
     1. Chief complaint: identify the main problem and since when it started
@@ -1011,13 +954,14 @@ def get_cached_qa_chain(model_name, temperature):
 
     Response style:
     - If the user gives only a short complaint like "I have fever", ask 2 to 4 focused follow-up questions before giving possible causes
-    - If enough information is already available, give a short explanation first
+    - If enough information is already available, give a slightly fuller explanation first
     - Then include `Precautions:` with simple, practical safety advice
     - When relevant, include `Possible causes:` with 2 to 4 likely conditions
     - When relevant, include `Risk level:` as one of: Low, Urgent, Emergency
     - End with a brief medical disclaimer and one follow-up question if more history is needed
     - Prefer short bullets over long paragraphs
     - Avoid long lists unless the user asked for a list
+    - Use 1 to 2 short bullets per section when useful
 
     Preferred section headings:
     - Explanation:
@@ -1035,8 +979,13 @@ def get_cached_qa_chain(model_name, temperature):
     - If the user describes red-flag symptoms like chest pain, breathing trouble, severe dehydration, confusion, stroke signs, or heavy bleeding, treat that as urgent or emergency
     - Never present differential diagnosis as certainty
     - If the user asks for images and no image generation or image source is available, say that clearly in plain language
+    - For image-based skin questions, describe the visible pattern first, then give possible causes, then next steps
+    - If attachment mode is `carried_forward`, treat the attachment as prior context and mention it briefly only if needed
 
     User question: {question}
+
+    Attachment mode:
+    {attachment_mode}
 
     Recent conversation:
     {recent_history}
@@ -1052,6 +1001,7 @@ def get_cached_qa_chain(model_name, temperature):
             prompt_text = custom_prompt_template.format(
                 context=context,
                 question=query,
+                attachment_mode=attachment_mode,
                 recent_history=recent_history,
                 attachment_text=attachment_text,
             )
@@ -1177,8 +1127,15 @@ with st.sidebar:
 st.markdown(
     """
 <div class="custom-header">
-    <div class="hero-kicker">Live Clinical Knowledge Workspace</div>
-    <div class="hero-grid"><div><h1>Doctor Assistant</h1><p>Your AI Medical Assistant with animated chat, live retrieval, and multimodal review.</p><div class="hero-bullets"><span class="hero-chip">Grounded vector search</span><span class="hero-chip">Voice, file, and image input</span><span class="hero-chip">Fast model switching</span></div></div><div class="hero-sidecard"><h3>Interactive session</h3><p>Use the composer below to ask follow-up questions, upload reports, or review symptoms with attached context.</p></div></div>
+    <div class="custom-header-content">
+        <h1>MediBot</h1>
+        <p>A professional clinical workspace for symptom guidance, document review, retrieval-backed answers, and clearer patient communication.</p>
+        <div class="hero-bullets">
+            <span class="hero-chip">Evidence-aware responses</span>
+            <span class="hero-chip">Image, file, and voice intake</span>
+            <span class="hero-chip">Fast triage-friendly workflow</span>
+        </div>
+    </div>
 </div>
 """,
     unsafe_allow_html=True,
@@ -1192,23 +1149,28 @@ assistant_count = sum(1 for message in current_messages if message["role"] == "a
 st.markdown(
     f"""
 <div class="metric-grid">
-    <div class="stat-card"><h3>{len(st.session_state.conversations)}</h3><p>Active chat threads</p></div>
-    <div class="stat-card"><h3>{message_count}</h3><p>Messages in this thread</p></div>
-    <div class="stat-card"><h3>{attachment_count}</h3><p>Attachments reviewed</p></div>
+    <div class="stat-card"><h3>{len(st.session_state.conversations)}</h3><p>Active case threads</p></div>
+    <div class="stat-card"><h3>{message_count}</h3><p>Messages in current workspace</p></div>
+    <div class="stat-card"><h3>{attachment_count}</h3><p>Clinical files reviewed</p></div>
 </div>
 <div class="quick-actions">
-    <span class="quick-pill">Try symptom check follow-ups</span>
-    <span class="quick-pill">Upload reports and ask for a summary</span>
-    <span class="quick-pill">Use voice input for hands-free prompts</span>
-    <span class="quick-pill">{assistant_count} assistant replies in this session</span>
+    <span class="quick-pill">Use symptom follow-ups for better triage</span>
+    <span class="quick-pill">Upload reports for concise interpretation</span>
+    <span class="quick-pill">Capture questions hands-free with voice</span>
+    <span class="quick-pill">{assistant_count} assistant replies in this case</span>
 </div>
 """,
     unsafe_allow_html=True,
 )
 
+
+# Professional chat bubbles with role-based styling
 for message in current_messages:
-    with st.chat_message(message["role"], avatar="👤" if message["role"] == "user" else "🩺"):
-        st.markdown(message["content"])
+    role = message["role"]
+    avatar = "👤" if role == "user" else "🩺"
+    bubble_class = f"stChatMessage {role}"
+    with st.chat_message(role, avatar=avatar):
+        st.markdown(f'<div class="{bubble_class}">{message["content"]}</div>', unsafe_allow_html=True)
 
         if message.get("attachments"):
             chips = []
@@ -1224,16 +1186,16 @@ for message in current_messages:
                     for block in message["attachment_context"]:
                         st.markdown(block)
 
-        if message["role"] == "assistant" and "sources" in message:
+        if role == "assistant" and "sources" in message:
             with st.expander("Sources"):
                 for i, source in enumerate(message["sources"], 1):
                     st.markdown(
                         f"""
-                    <div class="source-doc">
-                        <strong>Source {i}:</strong><br>
-                        {source.page_content[:300]}...
-                    </div>
-                    """,
+                        <div class="source-doc">
+                            <strong>Source {i}:</strong><br>
+                            {source.page_content[:300]}...
+                        </div>
+                        """,
                         unsafe_allow_html=True,
                     )
 
@@ -1241,21 +1203,21 @@ for message in current_messages:
 st.markdown(
     """
     <div class='composer-label'>Ask Smarter</div>
-    <div class='composer-caption'>Search symptoms, compare medications, or upload a report for contextual analysis.</div>
+    <div class='composer-caption'>Ask about symptoms, compare treatments, summarize uploaded reports, or rewrite medical language into something easier to understand.</div>
     <div class='composer-shell'>
         <div class='suggestion-row'>
             <span class='suggestion-chip'>Symptoms and next steps</span>
-            <span class='suggestion-chip'>Compare two medicines</span>
-            <span class='suggestion-chip'>Summarize uploaded report</span>
-            <span class='suggestion-chip'>Explain in simple language</span>
+            <span class='suggestion-chip'>Medication comparison</span>
+            <span class='suggestion-chip'>Report summary</span>
+            <span class='suggestion-chip'>Plain-language explanation</span>
         </div>
-        <div class='command-bar'>
     """,
     unsafe_allow_html=True,
 )
 with st.form("chat_composer_form", clear_on_submit=False):
+    uploader_suffix = st.session_state.composer_upload_nonce
     composer_col1, composer_col2, composer_col3, composer_col4 = st.columns(
-        [0.9, 5.4, 0.9, 1.0],
+        [0.8, 5.8, 0.9, 1.0],
         gap="small",
     )
     with composer_col1:
@@ -1264,13 +1226,13 @@ with st.form("chat_composer_form", clear_on_submit=False):
                 "Photo",
                 type=["png", "jpg", "jpeg", "webp"],
                 accept_multiple_files=True,
-                key="chat_image_upload",
+                key=f"chat_image_upload_{uploader_suffix}",
             )
             uploaded_files = st.file_uploader(
                 "File",
                 type=["pdf", "txt", "doc", "docx", "csv"],
                 accept_multiple_files=True,
-                key="chat_file_upload",
+                key=f"chat_file_upload_{uploader_suffix}",
             )
     with composer_col2:
         prompt = st.text_input(
@@ -1283,11 +1245,11 @@ with st.form("chat_composer_form", clear_on_submit=False):
         with st.popover("Mic", use_container_width=True):
             recorded_audio = st.audio_input(
                 "Voice",
-                key="chat_voice_input",
+                key=f"chat_voice_input_{uploader_suffix}",
             )
     with composer_col4:
         submitted = st.form_submit_button("Send", use_container_width=True)
-st.markdown("</div></div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 pending_attachments = build_attachment_metadata(uploaded_images, uploaded_files, recorded_audio)
 if pending_attachments:
@@ -1310,25 +1272,34 @@ if submitted and (prompt or pending_attachments):
     if not prompt and pending_attachments:
         prompt = "Please review the attached items and help me understand them."
 
-    try:
-        attachment_blocks = build_attachment_context(
-            uploaded_images,
-            uploaded_files,
-            recorded_audio,
-            active_api_key,
-        )
-    except Exception as e:
-        st.error(f"Failed to process an attachment: {str(e)}")
-        st.stop()
+    current_chat_messages = st.session_state.conversations[st.session_state.current_chat_id]["messages"]
+    _latest_attachments, latest_attachment_blocks = get_latest_attachment_payload(current_chat_messages)
+    attachment_blocks = []
+    attachment_mode = "none"
+
+    if pending_attachments:
+        try:
+            attachment_blocks = build_attachment_context(
+                uploaded_images,
+                uploaded_files,
+                recorded_audio,
+                active_api_key,
+            )
+        except Exception as e:
+            st.error(f"Failed to process an attachment: {str(e)}")
+            st.stop()
+        attachment_mode = "fresh_upload"
+    elif latest_attachment_blocks:
+        attachment_blocks = latest_attachment_blocks
+        attachment_mode = "carried_forward"
 
     user_message = {
         "role": "user",
         "content": prompt,
         "attachments": pending_attachments,
-        "attachment_context": attachment_blocks,
+        "attachment_context": attachment_blocks if pending_attachments else [],
         "timestamp": datetime.now().strftime("%H:%M"),
     }
-    current_chat_messages = st.session_state.conversations[st.session_state.current_chat_id]["messages"]
     recent_history = build_recent_history(current_chat_messages)
     current_chat_messages.append(user_message)
 
@@ -1364,6 +1335,7 @@ if submitted and (prompt or pending_attachments):
                         {
                             "query": prompt,
                             "attachment_context": attachment_blocks,
+                            "attachment_mode": attachment_mode,
                             "recent_history": recent_history,
                         }
                     )
@@ -1383,9 +1355,10 @@ if submitted and (prompt or pending_attachments):
                     )
 
                     st.session_state.chat_count += 1
+                    st.session_state.composer_upload_nonce += 1
 
                     if source_documents:
-                        with st.expander("📚 View Source Documents"):
+                        with st.expander("View Source Documents"):
                             for i, source in enumerate(source_documents, 1):
                                 st.markdown(
                                     f"""
@@ -1423,16 +1396,16 @@ if submitted and (prompt or pending_attachments):
 st.markdown("---")
 st.markdown(
     """
-<div style='text-align: center; color: #ECECF1; padding: 20px;'>
-    <p>Made with ❤️ using Streamlit, LangChain, and Groq | Doctor Assistant v1.0</p>
+<div class='footer-bar'>
+    <p><strong>Doctor Assistant</strong> is built for structured medical Q&amp;A, multimodal review, and faster knowledge retrieval.</p>
+    <div class='footer-meta'>Powered by Streamlit, LangChain, and Groq</div>
     <div class='disclaimer-banner'>
-        <strong>⚠️ Medical Disclaimer:</strong> This chatbot provides general medical information only. Always consult qualified healthcare professionals for medical advice.
+        <strong>Medical Disclaimer:</strong> This assistant provides general informational support only and does not replace licensed clinical judgment, diagnosis, or treatment.
     </div>
-    <hr style='margin: 15px 0; border: none; border-top: 1px solid #565869;'>
-    <p style='font-size: 0.85rem; color: #ECECF1;'><strong>Developed by Mayur Panchbhai</strong></p>
-    <p style='font-size: 0.8rem; color: #10A37F;'>
-        <a href='https://www.linkedin.com/in/mayur-panchbhai-bb86723a0' target='_blank' style='color: #10A37F; text-decoration: none;'>🔗 LinkedIn</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='https://github.com/mayurpanchbhai03-source' target='_blank' style='color: #10A37F; text-decoration: none;'>🐙 GitHub</a>
-    </p>
+    <div class='footer-meta'><strong>Developed by Kunal Chaudhari</strong></div>
+    <div class='footer-links'>
+        <a href='https://www.linkedin.com/in/kunal-chaudhari-8311542a6' target='_blank'>LinkedIn</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='https://github.com/Nice-Kunal' target='_blank'>GitHub</a>
+    </div>
 </div>
 """,
     unsafe_allow_html=True,
