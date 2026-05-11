@@ -4,11 +4,11 @@ This project now keeps only the main Streamlit application and the files it need
 
 ## 🎬 Preview Demo
 
-<video src="preview_demo.mp4" autoplay="autoplay" loop="loop" muted="muted" playsinline controls="controls" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+<video src="Preview%20Demo.mp4" autoplay loop muted playsinline controls>
   Your browser does not support the video tag.
 </video>
 
-*(The video above will autoplay as an animation. Ensure `preview_demo.mp4` is in the same folder as this README!)*
+*(The video above will autoplay as an animation. Ensure `Preview Demo.mp4` is in the same folder as this README!)*
 
 ## 🚀 Local Setup Guide
 
