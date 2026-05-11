@@ -1,0 +1,5 @@
+[server]
+# Streamlit's module watcher can trigger noisy optional-dependency imports
+# (e.g. transformers -> torchvision) and spam Tracebacks in logs.
+fileWatcherType = "none"
+

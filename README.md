@@ -1,19 +1,41 @@
-# Medical Chatbot
+# 🏥 Medical Chatbot
 
 This project now keeps only the main Streamlit application and the files it needs to run.
 
-## Main App
+## 🎬 Preview Demo
 
-Run:
+<video src="preview_demo.mp4" autoplay="autoplay" loop="loop" muted="muted" playsinline controls="controls" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  Your browser does not support the video tag.
+</video>
+
+*(The video above will autoplay as an animation. Ensure `preview_demo.mp4` is in the same folder as this README!)*
+
+## 🚀 Local Setup Guide
+
+Follow these steps to run the application on your local machine using a virtual environment.
+
+### 1. Clone the repository
 
 ```bash
-streamlit run medical_chatbot_ui.py
+git clone <your-repo-url>
+cd kunal-medical-bot
 ```
 
-## Setup
+### 2. Create and activate a virtual environment
 
-1. Create or activate a Python virtual environment.
-2. Install dependencies:
+**For Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**For macOS/Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -25,10 +47,12 @@ pip install -r requirements.txt
 GROQ_API_KEY=your_groq_api_key
 ```
 
+Security note: never commit real keys. A template is provided in `key.env.example`.
+
 4. Start the app:
 
 ```bash
-streamlit run medical_chatbot_ui.py
+streamlit run main.py
 ```
 
 5. Open the browser at:
